@@ -68,6 +68,154 @@
   <!-- Toast Notification Container -->
   <div id="toastContainer" class="fixed top-5 right-5 z-50 flex flex-col gap-2 pointer-events-none max-w-sm w-full"></div>
 
+  <!-- ==================== DEDICATED LOGIN OVERLAY SCREEN ==================== -->
+  <div id="loginScreen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/95 backdrop-blur-md p-4 overflow-y-auto custom-scroll">
+    <div class="max-w-4xl w-full bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl overflow-hidden grid grid-cols-1 lg:grid-cols-12 my-auto">
+      
+      <!-- Left Column: MSU EdTech Portal Branding -->
+      <div class="lg:col-span-5 bg-gradient-to-br from-slate-950 via-slate-900 to-amber-950/40 p-6 sm:p-8 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-slate-800 text-white relative">
+        <div class="space-y-4">
+          <div class="flex items-center space-x-3">
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-500 via-amber-400 to-yellow-300 flex items-center justify-center text-slate-950 font-extrabold text-xl shadow-lg shadow-amber-500/30 ring-2 ring-amber-400/40">
+              MSU
+            </div>
+            <div>
+              <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-400/30">EdTech Portal</span>
+              <h2 class="font-bold text-base sm:text-lg text-white">ระบบติดตามวิทยานิพนธ์ & IS</h2>
+            </div>
+          </div>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            ภาควิชาเทคโนโลยีและสื่อสารการศึกษา คณะศึกษาศาสตร์ มหาวิทยาลัยมหาสารคาม
+          </p>
+          <div class="p-3.5 rounded-2xl bg-slate-800/80 border border-slate-700/80 text-xs text-slate-300 space-y-1.5">
+            <div class="flex items-center gap-1.5 font-bold text-amber-400">
+              <i data-lucide="shield-check" class="w-4 h-4"></i> ระบบยืนยันตัวตนและการเข้าถึง (RBAC)
+            </div>
+            <p class="text-[11px] text-slate-400">
+              เข้าสู่ระบบด้วยรหัสนิสิต หรืออีเมลของมหาวิทยาลัย (@msu.ac.th) เพื่อเข้าใช้งานตามสิทธิ์ที่ได้รับมอบหมาย
+            </p>
+          </div>
+        </div>
+
+        <!-- Quick Demo Hint -->
+        <div class="pt-6 border-t border-slate-800/80 mt-6 lg:mt-0">
+          <span class="text-[11px] text-slate-400 block mb-1.5 font-semibold">หรือเลือกเข้าสู่ระบบด่วนด้วยบัญชีทดสอบ:</span>
+          <div class="grid grid-cols-2 gap-2 text-[11px]">
+            <button type="button" onclick="quickFillLogin('student')" class="p-2 bg-slate-800/90 hover:bg-amber-500/20 hover:border-amber-400 border border-slate-700 rounded-xl text-left transition">
+              <div class="font-bold text-amber-300">1. นิสิต</div>
+              <div class="text-[10px] text-slate-400">65010512001</div>
+            </button>
+            <button type="button" onclick="quickFillLogin('advisor')" class="p-2 bg-slate-800/90 hover:bg-blue-500/20 hover:border-blue-400 border border-slate-700 rounded-xl text-left transition">
+              <div class="font-bold text-blue-300">2. ที่ปรึกษา</div>
+              <div class="text-[10px] text-slate-400">technology.m</div>
+            </button>
+            <button type="button" onclick="quickFillLogin('coordinator')" class="p-2 bg-slate-800/90 hover:bg-emerald-500/20 hover:border-emerald-400 border border-slate-700 rounded-xl text-left transition">
+              <div class="font-bold text-emerald-300">3. เจ้าหน้าที่</div>
+              <div class="text-[10px] text-slate-400">wilaiwan.g</div>
+            </button>
+            <button type="button" onclick="quickFillLogin('admin')" class="p-2 bg-slate-800/90 hover:bg-purple-500/20 hover:border-purple-400 border border-slate-700 rounded-xl text-left transition">
+              <div class="font-bold text-purple-300">4. ผู้ดูแลระบบ</div>
+              <div class="text-[10px] text-slate-400">superadmin</div>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Login Form -->
+      <div class="lg:col-span-7 bg-white p-6 sm:p-8 flex flex-col justify-center">
+        <div class="max-w-md w-full mx-auto space-y-5">
+          <div>
+            <h3 class="text-xl font-bold text-slate-900">เข้าสู่ระบบ (Sign In)</h3>
+            <p class="text-xs text-slate-500 mt-1">กรอกชื่อผู้ใช้หรือรหัสนิสิต และรหัสผ่านเพื่อเข้าสู่ระบบ</p>
+          </div>
+
+          <!-- Login Error Alert -->
+          <div id="loginErrorBox" class="hidden p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center gap-2">
+            <i data-lucide="alert-circle" class="w-4 h-4 shrink-0"></i>
+            <span id="loginErrorMessage">ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง</span>
+          </div>
+
+          <form onsubmit="handleLoginSubmit(event)" class="space-y-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">
+                ชื่อผู้ใช้ / รหัสนิสิต / อีเมล *
+              </label>
+              <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                  <i data-lucide="user" class="w-4 h-4"></i>
+                </div>
+                <input 
+                  type="text" 
+                  id="loginUsernameInput" 
+                  required
+                  autocomplete="username"
+                  placeholder="เช่น 65010512001 หรือ technology.m@msu.ac.th" 
+                  class="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm text-slate-900 focus:ring-2 focus:ring-amber-500 focus:bg-white transition"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">
+                รหัสผ่าน (Password) *
+              </label>
+              <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                  <i data-lucide="lock" class="w-4 h-4"></i>
+                </div>
+                <input 
+                  type="password" 
+                  id="loginPasswordInput" 
+                  required
+                  autocomplete="current-password"
+                  placeholder="กรอกรหัสผ่านของคุณ" 
+                  class="w-full pl-9 pr-10 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm text-slate-900 focus:ring-2 focus:ring-amber-500 focus:bg-white transition font-mono"
+                />
+                <button 
+                  type="button" 
+                  onclick="toggleLoginPasswordVisibility()" 
+                  class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600"
+                  tabindex="-1"
+                >
+                  <i data-lucide="eye" id="togglePasswordIcon" class="w-4 h-4"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between text-xs">
+              <label class="flex items-center gap-2 cursor-pointer select-none text-slate-600">
+                <input type="checkbox" id="rememberMeCheckbox" checked class="w-4 h-4 rounded text-amber-500 focus:ring-amber-400">
+                <span>จดจำการเข้าสู่ระบบ</span>
+              </label>
+              <a href="javascript:void(0)" onclick="showToast('หากลืมรหัสผ่าน กรุณาติดต่อผู้ดูแลระบบภาควิชาฯ (โทร. 2501)')" class="text-amber-600 hover:underline font-semibold">ลืมรหัสผ่าน?</a>
+            </div>
+
+            <button 
+              type="submit" 
+              id="btnLoginSubmit"
+              class="w-full py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-sm rounded-xl shadow-md hover:shadow-lg transition flex items-center justify-center gap-2"
+            >
+              <i data-lucide="log-in" class="w-4 h-4"></i>
+              <span>เข้าสู่ระบบ (Sign In)</span>
+            </button>
+          </form>
+
+          <!-- Password Reference Helper for Demo -->
+          <div class="border-t border-slate-100 pt-3 text-[11px] text-slate-500 space-y-1">
+            <span class="font-bold text-slate-700 block">รหัสผ่านเริ่มต้นสำหรับทดสอบ (Demo Passwords):</span>
+            <div class="grid grid-cols-2 gap-x-2 gap-y-0.5 text-[10px] text-slate-600">
+              <div>• นิสิต: <code class="text-amber-700 font-bold bg-slate-100 px-1 rounded">password123</code></div>
+              <div>• ที่ปรึกษา: <code class="text-blue-700 font-bold bg-slate-100 px-1 rounded">msu@advisor</code></div>
+              <div>• จนท.บัณฑิต: <code class="text-emerald-700 font-bold bg-slate-100 px-1 rounded">msu@staff</code></div>
+              <div>• Super Admin: <code class="text-purple-700 font-bold bg-slate-100 px-1 rounded">msu@admin</code></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
   <header class="sticky top-0 z-40 bg-slate-950 text-white border-b border-amber-500/30 shadow-lg backdrop-blur-md bg-slate-950/95">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-20">
@@ -175,6 +323,15 @@
               <div id="navUserName" class="font-bold text-slate-100 leading-tight">นายสมชาย นวัตกรรม</div>
               <div id="navUserSub" class="text-amber-400 text-[10px]">นิสิต กศ.ม. แผน ก (65010512001)</div>
             </div>
+            <!-- Logout Button -->
+            <button 
+              onclick="handleLogout()" 
+              class="ml-1 p-2 rounded-xl text-slate-400 hover:text-rose-400 hover:bg-rose-950/40 border border-slate-800 hover:border-rose-700/50 transition flex items-center gap-1 text-xs font-semibold"
+              title="ออกจากระบบ (Sign Out)"
+            >
+              <i data-lucide="log-out" class="w-4 h-4"></i>
+              <span class="hidden sm:inline">ออกจากระบบ</span>
+            </button>
           </div>
 
         </div>
@@ -997,7 +1154,7 @@
         <input 
           type="url" 
           id="gasApiUrlInput" 
-          placeholder="https://script.google.com/macros/s/.../exec"
+          placeholder="https://script.google.com/macros/s/AKfycbziw2rE5BLRvlqhwTxvxUUIlVf7ZBdFfaQIRVkbsN5WYa5IXyXYk5olt0yN5C1wYyeb/exec"
           class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs sm:text-sm text-slate-800 font-mono focus:ring-2 focus:ring-amber-500 focus:bg-white"
         />
       </div>
@@ -1454,14 +1611,20 @@
           <input type="text" id="userInputName" required placeholder="เช่น นายวิชาญ นวัตกรรม" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 focus:ring-2 focus:ring-purple-500 focus:bg-white">
         </div>
 
-        <div>
-          <label class="block font-bold text-slate-700 mb-1">บทบาทในระบบ *</label>
-          <select id="userInputRole" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 focus:ring-2 focus:ring-purple-500 focus:bg-white">
-            <option value="student">นิสิต (Student)</option>
-            <option value="advisor">อาจารย์ที่ปรึกษา (Advisor)</option>
-            <option value="coordinator">เจ้าหน้าที่บัณฑิตศึกษา (Coordinator)</option>
-            <option value="admin">ผู้ดูแลระบบสูงสุด (Super Admin)</option>
-          </select>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">บทบาทในระบบ *</label>
+            <select id="userInputRole" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 focus:ring-2 focus:ring-purple-500 focus:bg-white">
+              <option value="student">นิสิต (Student)</option>
+              <option value="advisor">อาจารย์ที่ปรึกษา (Advisor)</option>
+              <option value="coordinator">เจ้าหน้าที่บัณฑิตศึกษา (Coordinator)</option>
+              <option value="admin">ผู้ดูแลระบบสูงสุด (Super Admin)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">รหัสผ่านเข้าสู่ระบบ *</label>
+            <input type="text" id="userInputPassword" required placeholder="เช่น msu@1234" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-mono focus:ring-2 focus:ring-purple-500 focus:bg-white">
+          </div>
         </div>
 
         <div>
@@ -1644,8 +1807,9 @@
     }
 
     const state = {
+      isLoggedIn: false,           // Authentication state
       activeRole: 'student',       // Tab: 'student' | 'advisor' | 'admin'
-      currentPersona: 'student',   // Simulated: 'student' | 'advisor' | 'coordinator' | 'admin'
+      currentPersona: 'student',   // Active Persona key
       currentStudentId: 'STU-001',
       apiUrl: resolveGasExecUrl(localStorage.getItem('MSU_EDTECH_GAS_API_URL') || DEFAULT_GAS_API_URL),
       isSyncing: false,
@@ -1661,8 +1825,10 @@
       personas: {
         student: {
           key: 'student',
-          name: 'นายสมชาย นวัตกรรม',
+          username: '65010512001',
           email: 'somchai.edtech@msu.ac.th',
+          password: 'password123',
+          name: 'นายสมชาย นวัตกรรม',
           roleTitle: 'นิสิต (กศ.ม. แผน ก)',
           subText: 'รหัสนิสิต: 65010512001',
           avatarText: 'สน',
@@ -1678,8 +1844,10 @@
         },
         advisor: {
           key: 'advisor',
-          name: 'รศ.ดร.เทคโนโลยี มีปัญญา',
+          username: 'technology.m@msu.ac.th',
           email: 'technology.m@msu.ac.th',
+          password: 'msu@advisor',
+          name: 'รศ.ดร.เทคโนโลยี มีปัญญา',
           roleTitle: 'อาจารย์ที่ปรึกษาหลัก',
           subText: 'ภาควิชาเทคโนโลยีและสื่อสารการศึกษา',
           avatarText: 'ทม',
@@ -1695,8 +1863,10 @@
         },
         coordinator: {
           key: 'coordinator',
-          name: 'คุณวิไลวรรณ ทะเบียนบัณฑิต',
+          username: 'wilaiwan.g@msu.ac.th',
           email: 'wilaiwan.g@msu.ac.th',
+          password: 'msu@staff',
+          name: 'คุณวิไลวรรณ ทะเบียนบัณฑิต',
           roleTitle: 'เจ้าหน้าที่บัณฑิตศึกษา',
           subText: 'คณะศึกษาศาสตร์ มมส.',
           avatarText: 'วท',
@@ -1712,8 +1882,10 @@
         },
         admin: {
           key: 'admin',
-          name: 'ฝ่ายพัฒนาระบบสารสนเทศ',
+          username: 'superadmin.edtech@msu.ac.th',
           email: 'superadmin.edtech@msu.ac.th',
+          password: 'msu@admin',
+          name: 'ฝ่ายพัฒนาระบบสารสนเทศ',
           roleTitle: 'ผู้ดูแลระบบสูงสุด (Super Admin)',
           subText: 'ผู้ดูแลระบบและนโยบายสิทธิ์',
           avatarText: 'SA',
@@ -1948,7 +2120,7 @@
 
     function initSystem() {
       populateAdvisorSelects();
-      enforcePersonaPermissions();
+      checkAuthSession();
       renderStudentView();
       renderAdvisorView();
       applyMultiFilters();
@@ -1963,15 +2135,124 @@
       }
     }
 
-    function refreshAllViews() {
-      populateAdvisorSelects();
-      renderStudentView();
-      renderAdvisorView();
-      applyMultiFilters();
-      renderAdvisorsTable();
-      renderDefensesTable();
-      renderAdminLogbooksTable();
-      renderRbacTable();
+    // ==================== AUTHENTICATION & LOGIN LOGIC ====================
+    function checkAuthSession() {
+      const savedUser = sessionStorage.getItem('MSU_EDTECH_AUTH_USER');
+      if (savedUser && state.personas[savedUser]) {
+        state.isLoggedIn = true;
+        state.currentPersona = savedUser;
+        document.getElementById('loginScreen').classList.add('hidden');
+        switchPersona(savedUser, false);
+      } else {
+        state.isLoggedIn = false;
+        document.getElementById('loginScreen').classList.remove('hidden');
+      }
+    }
+
+    function toggleLoginPasswordVisibility() {
+      const pwdInput = document.getElementById('loginPasswordInput');
+      const icon = document.getElementById('togglePasswordIcon');
+      if (pwdInput.type === 'password') {
+        pwdInput.type = 'text';
+        icon.setAttribute('data-lucide', 'eye-off');
+      } else {
+        pwdInput.type = 'password';
+        icon.setAttribute('data-lucide', 'eye');
+      }
+      lucide.createIcons();
+    }
+
+    function quickFillLogin(roleKey) {
+      const user = state.personas[roleKey];
+      if (!user) return;
+      document.getElementById('loginUsernameInput').value = user.username || user.email;
+      document.getElementById('loginPasswordInput').value = user.password || '';
+      document.getElementById('loginErrorBox').classList.add('hidden');
+    }
+
+    function handleLoginSubmit(e) {
+      e.preventDefault();
+      const usernameInput = document.getElementById('loginUsernameInput').value.trim().toLowerCase();
+      const passwordInput = document.getElementById('loginPasswordInput').value;
+      const errorBox = document.getElementById('loginErrorBox');
+      const errorMsg = document.getElementById('loginErrorMessage');
+
+      let matchedKey = null;
+      for (const [key, user] of Object.entries(state.personas)) {
+        const matchUser = (user.username && user.username.toLowerCase() === usernameInput) ||
+                          (user.email && user.email.toLowerCase() === usernameInput) ||
+                          (key.toLowerCase() === usernameInput);
+        if (matchUser) {
+          if (user.password === passwordInput) {
+            matchedKey = key;
+            break;
+          } else {
+            errorBox.classList.remove('hidden');
+            errorMsg.textContent = 'รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง';
+            return;
+          }
+        }
+      }
+
+      if (!matchedKey) {
+        errorBox.classList.remove('hidden');
+        errorMsg.textContent = 'ไม่พบบัญชีผู้ใช้นี้ในระบบ โปรดตรวจสอบชื่อผู้ใช้หรือรหัสผ่าน';
+        return;
+      }
+
+      // Successful Login
+      errorBox.classList.add('hidden');
+      state.isLoggedIn = true;
+      state.currentPersona = matchedKey;
+      sessionStorage.setItem('MSU_EDTECH_AUTH_USER', matchedKey);
+
+      // Hide login overlay
+      document.getElementById('loginScreen').classList.add('hidden');
+
+      // Direct to primary view based on role
+      if (matchedKey === 'student') navigateRole('student');
+      else if (matchedKey === 'advisor') navigateRole('advisor');
+      else navigateRole('admin');
+
+      switchPersona(matchedKey, false);
+      showToast(`เข้าสู่ระบบสำเร็จ! ยินดีต้อนรับ ${state.personas[matchedKey].name}`, 'success');
+    }
+
+    function handleLogout() {
+      state.isLoggedIn = false;
+      sessionStorage.removeItem('MSU_EDTECH_AUTH_USER');
+      document.getElementById('loginUsernameInput').value = '';
+      document.getElementById('loginPasswordInput').value = '';
+      document.getElementById('loginErrorBox').classList.add('hidden');
+      document.getElementById('loginScreen').classList.remove('hidden');
+      showToast('ออกจากระบบเรียบร้อยแล้ว', 'info');
+      lucide.createIcons();
+    }
+
+    function switchPersona(personaKey, notify = true) {
+      state.currentPersona = personaKey;
+      document.getElementById('personaDropdownMenu').classList.add('hidden');
+
+      ['student', 'advisor', 'coordinator', 'admin'].forEach(k => {
+        const icon = document.getElementById(`checkPersona-${k}`);
+        if (icon) icon.classList.toggle('hidden', k !== personaKey);
+      });
+
+      const persona = state.personas[personaKey];
+      document.getElementById('activePersonaLabel').textContent = persona.name;
+      document.getElementById('navUserName').textContent = persona.name;
+      document.getElementById('navUserSub').textContent = `${persona.roleTitle} • ${persona.subText}`;
+      document.getElementById('navUserBadge').textContent = persona.avatarText;
+
+      const dot = document.getElementById('roleIndicatorDot');
+      if (personaKey === 'student') dot.className = 'w-2.5 h-2.5 rounded-full bg-amber-400 ring-4 ring-amber-500/20';
+      else if (personaKey === 'advisor') dot.className = 'w-2.5 h-2.5 rounded-full bg-blue-400 ring-4 ring-blue-500/20';
+      else if (personaKey === 'coordinator') dot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-400 ring-4 ring-emerald-500/20';
+      else dot.className = 'w-2.5 h-2.5 rounded-full bg-purple-400 ring-4 ring-purple-500/20';
+
+      if (notify) {
+        showToast(`สลับบทบาทผู้ใช้งาน: ${persona.name} (${persona.roleTitle})`, 'info');
+      }
       enforcePersonaPermissions();
     }
 
@@ -3513,6 +3794,7 @@
       e.preventDefault();
       const name = document.getElementById('userInputName').value.trim();
       const role = document.getElementById('userInputRole').value;
+      const password = document.getElementById('userInputPassword').value.trim();
       const sub = document.getElementById('userInputSub').value.trim();
       const avatar = document.getElementById('userInputAvatar').value.trim();
       const key = `user_${Date.now()}`;
@@ -3521,7 +3803,9 @@
       const newUser = {
         key: key,
         name: name,
+        username: key,
         email: `${key}@msu.ac.th`,
+        password: password || 'msu1234',
         roleTitle: document.getElementById('userInputRole').selectedOptions[0].text,
         subText: sub,
         avatarText: avatar,
