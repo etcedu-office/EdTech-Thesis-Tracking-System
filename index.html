@@ -997,7 +997,7 @@
         <input 
           type="url" 
           id="gasApiUrlInput" 
-          placeholder="https://script.google.com/macros/s/AKfycbziw2rE5BLRvlqhwTxvxUUIlVf7ZBdFfaQIRVkbsN5WYa5IXyXYk5olt0yN5C1wYyeb/exec"
+          placeholder="https://script.google.com/macros/s/.../exec"
           class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs sm:text-sm text-slate-800 font-mono focus:ring-2 focus:ring-amber-500 focus:bg-white"
         />
       </div>
@@ -1626,11 +1626,28 @@
   </footer>
 
   <script>
+    // URL Web App API จาก Google Apps Script (ตั้งค่าเริ่มต้นตามที่คุณระบุ)
+    const DEFAULT_GAS_API_URL = 'https://script.google.com/macros/library/d/1-NQ9lsG8_hCgk6LQ41U-0DIQRDZ8qX4D3lR0oWmO87ksB5G_aWrHlt6V/2';
+
+    /**
+     * ฟังก์ชันช่วยจัดรูปแบบ URL ให้อยู่ในรูป Web App Endpoint (/exec) อัตโนมัติ
+     * หากคัดลอก Library URL มา ระบบจะแปลงเป็น Web App /exec ให้อัตโนมัติ
+     */
+    function resolveGasExecUrl(url) {
+      if (!url) return '';
+      const trimmed = url.trim();
+      const libraryMatch = trimmed.match(/\/macros\/library\/d\/([a-zA-Z0-9_-]+)/);
+      if (libraryMatch && libraryMatch[1] && !trimmed.endsWith('/exec')) {
+        return `https://script.google.com/macros/s/${libraryMatch[1]}/exec`;
+      }
+      return trimmed;
+    }
+
     const state = {
       activeRole: 'student',       // Tab: 'student' | 'advisor' | 'admin'
       currentPersona: 'student',   // Simulated: 'student' | 'advisor' | 'coordinator' | 'admin'
       currentStudentId: 'STU-001',
-      apiUrl: localStorage.getItem('MSU_EDTECH_GAS_API_URL') || '',
+      apiUrl: resolveGasExecUrl(localStorage.getItem('MSU_EDTECH_GAS_API_URL') || DEFAULT_GAS_API_URL),
       isSyncing: false,
       
       milestones: [
@@ -1890,7 +1907,7 @@
     }
 
     function openApiConfigModal() {
-      document.getElementById('gasApiUrlInput').value = state.apiUrl || '';
+      document.getElementById('gasApiUrlInput').value = state.apiUrl || DEFAULT_GAS_API_URL;
       document.getElementById('apiConfigModal').classList.remove('hidden');
       lucide.createIcons();
     }
@@ -1901,11 +1918,12 @@
 
     async function saveGasApiUrl() {
       const url = document.getElementById('gasApiUrlInput').value.trim();
-      state.apiUrl = url;
-      localStorage.setItem('MSU_EDTECH_GAS_API_URL', url);
+      const resolvedUrl = resolveGasExecUrl(url);
+      state.apiUrl = resolvedUrl;
+      localStorage.setItem('MSU_EDTECH_GAS_API_URL', resolvedUrl);
       closeApiConfigModal();
 
-      if (url) {
+      if (resolvedUrl) {
         showToast('บันทึก API URL สำเร็จ กำลังทดสอบเชื่อมต่อ...', 'info');
         await syncAllDataFromSheets();
       } else {
