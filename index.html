@@ -102,22 +102,30 @@
           <span class="text-[11px] text-slate-400 block mb-1.5 font-semibold">หรือเลือกเข้าสู่ระบบด่วนด้วยบัญชีทดสอบ:</span>
           <div class="grid grid-cols-2 gap-2 text-[11px]">
             <button type="button" onclick="quickFillLogin('student')" class="p-2 bg-slate-800/90 hover:bg-amber-500/20 hover:border-amber-400 border border-slate-700 rounded-xl text-left transition">
-              <div class="font-bold text-amber-300">1. นิสิต</div>
+              <div class="font-bold text-amber-300">1. นิสิต (สมชาย)</div>
               <div class="text-[10px] text-slate-400">65010512001</div>
             </button>
+            <button type="button" onclick="quickFillLogin('student_kanda')" class="p-2 bg-slate-800/90 hover:bg-amber-500/20 hover:border-amber-400 border border-slate-700 rounded-xl text-left transition">
+              <div class="font-bold text-amber-300">2. นิสิต (กานดา)</div>
+              <div class="text-[10px] text-slate-400">65010512002</div>
+            </button>
             <button type="button" onclick="quickFillLogin('advisor')" class="p-2 bg-slate-800/90 hover:bg-blue-500/20 hover:border-blue-400 border border-slate-700 rounded-xl text-left transition">
-              <div class="font-bold text-blue-300">2. ที่ปรึกษา</div>
+              <div class="font-bold text-blue-300">3. ที่ปรึกษา (รศ.ดร.เทคโนโลยี)</div>
               <div class="text-[10px] text-slate-400">technology.m</div>
             </button>
-            <button type="button" onclick="quickFillLogin('coordinator')" class="p-2 bg-slate-800/90 hover:bg-emerald-500/20 hover:border-emerald-400 border border-slate-700 rounded-xl text-left transition">
-              <div class="font-bold text-emerald-300">3. เจ้าหน้าที่</div>
-              <div class="text-[10px] text-slate-400">wilaiwan.g</div>
-            </button>
             <button type="button" onclick="quickFillLogin('admin')" class="p-2 bg-slate-800/90 hover:bg-purple-500/20 hover:border-purple-400 border border-slate-700 rounded-xl text-left transition">
-              <div class="font-bold text-purple-300">4. ผู้ดูแลระบบ</div>
+              <div class="font-bold text-purple-300">4. ผู้ดูแลระบบ (Admin)</div>
               <div class="text-[10px] text-slate-400">superadmin</div>
             </button>
           </div>
+          <button 
+            type="button" 
+            onclick="openAccountDirectoryModal()" 
+            class="w-full mt-3 py-2 px-3 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-400/40 text-amber-300 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition"
+          >
+            <i data-lucide="users" class="w-3.5 h-3.5"></i>
+            <span>ดูรายชื่อบัญชีและรหัสผ่านทั้งหมดในระบบ (All Passwords)</span>
+          </button>
         </div>
       </div>
 
@@ -202,17 +210,59 @@
 
           <!-- Password Reference Helper for Demo -->
           <div class="border-t border-slate-100 pt-3 text-[11px] text-slate-500 space-y-1">
-            <span class="font-bold text-slate-700 block">รหัสผ่านเริ่มต้นสำหรับทดสอบ (Demo Passwords):</span>
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-slate-700">รหัสผ่านสำหรับเข้าใช้งานระบบ:</span>
+              <button type="button" onclick="openAccountDirectoryModal()" class="text-amber-600 font-bold hover:underline text-[10px]">
+                ดูรายชื่อทั้งหมด (คลิกที่นี่) →
+              </button>
+            </div>
             <div class="grid grid-cols-2 gap-x-2 gap-y-0.5 text-[10px] text-slate-600">
-              <div>• นิสิต: <code class="text-amber-700 font-bold bg-slate-100 px-1 rounded">password123</code></div>
-              <div>• ที่ปรึกษา: <code class="text-blue-700 font-bold bg-slate-100 px-1 rounded">msu@advisor</code></div>
-              <div>• จนท.บัณฑิต: <code class="text-emerald-700 font-bold bg-slate-100 px-1 rounded">msu@staff</code></div>
+              <div>• นิสิต สมชาย: <code class="text-amber-700 font-bold bg-slate-100 px-1 rounded">somchai@2026</code></div>
+              <div>• นิสิต กานดา: <code class="text-amber-700 font-bold bg-slate-100 px-1 rounded">kanda@2026</code></div>
+              <div>• รศ.ดร.เทคโนโลยี: <code class="text-blue-700 font-bold bg-slate-100 px-1 rounded">tech@2026</code></div>
               <div>• Super Admin: <code class="text-purple-700 font-bold bg-slate-100 px-1 rounded">msu@admin</code></div>
             </div>
           </div>
         </div>
       </div>
 
+    </div>
+  </div>
+
+  <!-- MODAL: ACCOUNT & PASSWORD DIRECTORY -->
+  <div id="accountDirectoryModal" class="fixed inset-0 z-50 hidden bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-3xl w-full p-6 shadow-2xl border border-slate-200 max-h-[90vh] overflow-y-auto custom-scroll space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div>
+          <span class="text-[10px] font-bold uppercase tracking-wider text-amber-600 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">Security & Credentials Directory</span>
+          <h3 class="font-bold text-base sm:text-lg text-slate-900 mt-1">สมุดรายชื่อบัญชีผู้ใช้และรหัสผ่านทั้งหมด (All System Passwords)</h3>
+          <p class="text-xs text-slate-500">บัญชีผู้ใช้ทุกคนมีรหัสผ่านเฉพาะของตนเอง สามารถกดปุ่ม "เข้าสู่ระบบด้วยบัญชีนี้" เพื่อล็อกอินทันที</p>
+        </div>
+        <button onclick="closeAccountDirectoryModal()" class="w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-400">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="overflow-x-auto rounded-2xl border border-slate-200">
+        <table class="w-full text-left text-xs text-slate-700">
+          <thead class="bg-slate-900 text-white font-semibold">
+            <tr>
+              <th class="p-3">ชื่อ - นามสกุล</th>
+              <th class="p-3">บทบาท</th>
+              <th class="p-3">Username / รหัสเข้าใช้งาน</th>
+              <th class="p-3">รหัสผ่าน (Password)</th>
+              <th class="p-3 text-center">ดำเนินการ</th>
+            </tr>
+          </thead>
+          <tbody id="directoryTableBody" class="divide-y divide-slate-100"></tbody>
+        </table>
+      </div>
+
+      <div class="pt-2 flex justify-end">
+        <button type="button" onclick="closeAccountDirectoryModal()" class="px-5 py-2 text-xs font-bold bg-slate-900 hover:bg-slate-800 text-white rounded-xl shadow">
+          ปิดหน้าต่าง
+        </button>
+      </div>
     </div>
   </div>
 
@@ -249,19 +299,20 @@
             <i data-lucide="settings" class="w-3.5 h-3.5 text-slate-400"></i>
           </button>
 
-          <!-- Top Navigation Persona Switcher Simulator -->
-          <div class="relative">
-            <button id="personaDropdownBtn" onclick="togglePersonaDropdown()" class="flex items-center gap-2.5 bg-slate-800/90 hover:bg-slate-700 text-xs sm:text-sm font-medium px-3.5 py-2 rounded-xl border border-slate-700 shadow-sm transition">
+          <!-- Top Navigation Persona Switcher Simulator (Visible ONLY to Admin) -->
+          <div id="personaSwitcherWrapper" class="relative hidden">
+            <button id="personaDropdownBtn" onclick="togglePersonaDropdown()" class="flex items-center gap-2.5 bg-slate-800/90 hover:bg-slate-700 text-xs sm:text-sm font-medium px-3.5 py-2 rounded-xl border border-purple-500/40 shadow-sm transition">
               <span id="roleIndicatorDot" class="w-2.5 h-2.5 rounded-full bg-amber-400 ring-4 ring-amber-500/20"></span>
-              <span id="activePersonaLabel" class="text-slate-200 max-w-[130px] truncate">นิสิต: นายสมชาย</span>
+              <span id="activePersonaLabel" class="text-slate-200 max-w-[130px] truncate">สลับบัญชี (Admin)</span>
+              <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-purple-500/30 text-purple-300 border border-purple-400/40 hidden sm:inline">Admin Only</span>
               <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400"></i>
             </button>
 
             <!-- Persona Menu with Presets -->
             <div id="personaDropdownMenu" class="hidden absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-2xl border border-slate-200 py-2 z-50 text-slate-800 origin-top-right">
               <div class="px-4 py-2 border-b border-slate-100 flex items-center justify-between">
-                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">จำลองสิทธิ์ผู้ใช้งาน (Persona Simulator)</span>
-                <span class="text-[10px] font-mono text-purple-600 font-bold bg-purple-50 px-1.5 py-0.5 rounded">RBAC Live</span>
+                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">จำลองสิทธิ์ผู้ใช้งาน (Admin Simulator)</span>
+                <span class="text-[10px] font-mono text-purple-600 font-bold bg-purple-50 px-1.5 py-0.5 rounded">Admin Only</span>
               </div>
               
               <!-- Persona 1: Student -->
@@ -1103,6 +1154,7 @@
                 <tr>
                   <th class="py-3.5 px-4">ชื่อ - นามสกุล / อีเมล</th>
                   <th class="py-3.5 px-4">บทบาท (Role)</th>
+                  <th class="py-3.5 px-4">รหัสผ่าน (Password)</th>
                   <th class="py-3.5 px-4">โมดูลนิสิต</th>
                   <th class="py-3.5 px-4">โมดูลที่ปรึกษา</th>
                   <th class="py-3.5 px-4">โมดูลจัดการนิสิต</th>
@@ -1154,7 +1206,7 @@
         <input 
           type="url" 
           id="gasApiUrlInput" 
-          placeholder="https://script.google.com/macros/s/AKfycbziw2rE5BLRvlqhwTxvxUUIlVf7ZBdFfaQIRVkbsN5WYa5IXyXYk5olt0yN5C1wYyeb/exec"
+          placeholder="https://script.google.com/macros/s/.../exec"
           class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs sm:text-sm text-slate-800 font-mono focus:ring-2 focus:ring-amber-500 focus:bg-white"
         />
       </div>
@@ -1789,8 +1841,8 @@
   </footer>
 
   <script>
-    // URL Web App API จาก Google Apps Script (ตั้งค่าเริ่มต้นตามที่คุณระบุ)
-    const DEFAULT_GAS_API_URL = 'https://script.google.com/macros/library/d/1-NQ9lsG8_hCgk6LQ41U-0DIQRDZ8qX4D3lR0oWmO87ksB5G_aWrHlt6V/2';
+    // URL Web App API จาก Google Apps Script (Production Web App Endpoint)
+    const DEFAULT_GAS_API_URL = 'https://script.google.com/macros/s/AKfycbzylE5RYDcbO9OZb5l9JRbvULcpXmZeTWBVaVaFQI9R0x0-3VPbyXRFTT_JkN5vAiXfQQ/exec';
 
     /**
      * ฟังก์ชันช่วยจัดรูปแบบ URL ให้อยู่ในรูป Web App Endpoint (/exec) อัตโนมัติ
@@ -1808,6 +1860,7 @@
 
     const state = {
       isLoggedIn: false,           // Authentication state
+      authenticatedUser: null,     // Primary user who authenticated (e.g. 'admin', 'student')
       activeRole: 'student',       // Tab: 'student' | 'advisor' | 'admin'
       currentPersona: 'student',   // Active Persona key
       currentStudentId: 'STU-001',
@@ -1827,7 +1880,8 @@
           key: 'student',
           username: '65010512001',
           email: 'somchai.edtech@msu.ac.th',
-          password: 'password123',
+          password: 'somchai@2026',
+          studentId: 'STU-001',
           name: 'นายสมชาย นวัตกรรม',
           roleTitle: 'นิสิต (กศ.ม. แผน ก)',
           subText: 'รหัสนิสิต: 65010512001',
@@ -1842,15 +1896,136 @@
             adminRbac: { v: false, e: false, d: false, a: false }
           }
         },
+        student_kanda: {
+          key: 'student_kanda',
+          username: '65010512002',
+          email: 'kanda.edtech@msu.ac.th',
+          password: 'kanda@2026',
+          studentId: 'STU-002',
+          name: 'นางสาวกานดา สื่อการสอน',
+          roleTitle: 'นิสิต (กศ.ม. แผน ข IS)',
+          subText: 'รหัสนิสิต: 65010512002',
+          avatarText: 'กส',
+          permissions: {
+            studentModule: { v: true, e: true, d: false, a: false },
+            advisorModule: { v: false, e: false, d: false, a: false },
+            gradOfficerModule: { v: false, e: false, d: false, a: false },
+            adminStudents: { v: false, e: false, d: false, a: false },
+            adminAdvisors: { v: false, e: false, d: false, a: false },
+            adminDefenses: { v: false, e: false, d: false, a: false },
+            adminRbac: { v: false, e: false, d: false, a: false }
+          }
+        },
+        student_ekachai: {
+          key: 'student_ekachai',
+          username: '64010512008',
+          email: 'ekachai.edtech@msu.ac.th',
+          password: 'ekachai@2026',
+          studentId: 'STU-003',
+          name: 'นายเอกชัย นวัตวิจัย',
+          roleTitle: 'นิสิต (ปร.ด. ปริญญาเอก)',
+          subText: 'รหัสนิสิต: 64010512008',
+          avatarText: 'อน',
+          permissions: {
+            studentModule: { v: true, e: true, d: false, a: false },
+            advisorModule: { v: false, e: false, d: false, a: false },
+            gradOfficerModule: { v: false, e: false, d: false, a: false },
+            adminStudents: { v: false, e: false, d: false, a: false },
+            adminAdvisors: { v: false, e: false, d: false, a: false },
+            adminDefenses: { v: false, e: false, d: false, a: false },
+            adminRbac: { v: false, e: false, d: false, a: false }
+          }
+        },
         advisor: {
           key: 'advisor',
           username: 'technology.m@msu.ac.th',
           email: 'technology.m@msu.ac.th',
-          password: 'msu@advisor',
+          password: 'tech@2026',
+          advisorName: 'รศ.ดร.เทคโนโลยี มีปัญญา',
           name: 'รศ.ดร.เทคโนโลยี มีปัญญา',
           roleTitle: 'อาจารย์ที่ปรึกษาหลัก',
           subText: 'ภาควิชาเทคโนโลยีและสื่อสารการศึกษา',
           avatarText: 'ทม',
+          permissions: {
+            studentModule: { v: true, e: false, d: false, a: false },
+            advisorModule: { v: true, e: true, d: false, a: true },
+            gradOfficerModule: { v: true, e: false, d: false, a: false },
+            adminStudents: { v: true, e: false, d: false, a: false },
+            adminAdvisors: { v: true, e: false, d: false, a: false },
+            adminDefenses: { v: true, e: false, d: false, a: false },
+            adminRbac: { v: false, e: false, d: false, a: false }
+          }
+        },
+        advisor_thanadol: {
+          key: 'advisor_thanadol',
+          username: 'thanadol.p@msu.ac.th',
+          email: 'thanadol.p@msu.ac.th',
+          password: 'thanadol@2026',
+          advisorName: 'ผศ.ดร.ธนดล ภูสีฤทธิ์',
+          name: 'ผศ.ดร.ธนดล ภูสีฤทธิ์',
+          roleTitle: 'อาจารย์ที่ปรึกษา',
+          subText: 'ภาควิชาเทคโนโลยีและสื่อสารการศึกษา',
+          avatarText: 'ธภ',
+          permissions: {
+            studentModule: { v: true, e: false, d: false, a: false },
+            advisorModule: { v: true, e: true, d: false, a: true },
+            gradOfficerModule: { v: true, e: false, d: false, a: false },
+            adminStudents: { v: true, e: false, d: false, a: false },
+            adminAdvisors: { v: true, e: false, d: false, a: false },
+            adminDefenses: { v: true, e: false, d: false, a: false },
+            adminRbac: { v: false, e: false, d: false, a: false }
+          }
+        },
+        advisor_worapaphat: {
+          key: 'advisor_worapaphat',
+          username: 'worapaphat.t@msu.ac.th',
+          email: 'worapaphat.t@msu.ac.th',
+          password: 'worapaphat@2026',
+          advisorName: 'รศ.ดร.วรปภัสร์ ธีรสิทธิคุณ',
+          name: 'รศ.ดร.วรปภัสร์ ธีรสิทธิคุณ',
+          roleTitle: 'อาจารย์ที่ปรึกษา',
+          subText: 'ภาควิชาเทคโนโลยีและสื่อสารการศึกษา',
+          avatarText: 'วธ',
+          permissions: {
+            studentModule: { v: true, e: false, d: false, a: false },
+            advisorModule: { v: true, e: true, d: false, a: true },
+            gradOfficerModule: { v: true, e: false, d: false, a: false },
+            adminStudents: { v: true, e: false, d: false, a: false },
+            adminAdvisors: { v: true, e: false, d: false, a: false },
+            adminDefenses: { v: true, e: false, d: false, a: false },
+            adminRbac: { v: false, e: false, d: false, a: false }
+          }
+        },
+        advisor_panya: {
+          key: 'advisor_panya',
+          username: 'panya.d@msu.ac.th',
+          email: 'panya.d@msu.ac.th',
+          password: 'panya@2026',
+          advisorName: 'ผศ.ดร.ปัญญา ดิจิทัล',
+          name: 'ผศ.ดร.ปัญญา ดิจิทัล',
+          roleTitle: 'อาจารย์ที่ปรึกษา',
+          subText: 'ภาควิชาเทคโนโลยีและสื่อสารการศึกษา',
+          avatarText: 'ปด',
+          permissions: {
+            studentModule: { v: true, e: false, d: false, a: false },
+            advisorModule: { v: true, e: true, d: false, a: true },
+            gradOfficerModule: { v: true, e: false, d: false, a: false },
+            adminStudents: { v: true, e: false, d: false, a: false },
+            adminAdvisors: { v: true, e: false, d: false, a: false },
+            adminDefenses: { v: true, e: false, d: false, a: false },
+            adminRbac: { v: false, e: false, d: false, a: false }
+          }
+        },
+        advisor_prasit: {
+          key: 'advisor_prasit',
+          username: 'prasit.s@msu.ac.th',
+          email: 'prasit.s@msu.ac.th',
+          password: 'prasit@2026',
+          advisorName: 'ศ.ดร.ประสิทธิ์ สื่อสาร',
+          name: 'ศ.ดร.ประสิทธิ์ สื่อสาร',
+          roleTitle: 'อาจารย์ที่ปรึกษา',
+          subText: 'ภาควิชาเทคโนโลยีและสื่อสารการศึกษา',
+          avatarText: 'ปส',
           permissions: {
             studentModule: { v: true, e: false, d: false, a: false },
             advisorModule: { v: true, e: true, d: false, a: true },
@@ -2118,6 +2293,21 @@
       initSystem();
     });
 
+    function refreshAllViews() {
+      populateAdvisorSelects();
+      renderStudentView();
+      renderAdvisorView();
+      applyMultiFilters();
+      renderAdvisorsTable();
+      renderDefensesTable();
+      renderAdminLogbooksTable();
+      renderRbacTable();
+      enforcePersonaPermissions();
+      if (window.lucide && typeof lucide.createIcons === 'function') {
+        lucide.createIcons();
+      }
+    }
+
     function initSystem() {
       populateAdvisorSelects();
       checkAuthSession();
@@ -2140,12 +2330,40 @@
       const savedUser = sessionStorage.getItem('MSU_EDTECH_AUTH_USER');
       if (savedUser && state.personas[savedUser]) {
         state.isLoggedIn = true;
+        state.authenticatedUser = savedUser;
         state.currentPersona = savedUser;
         document.getElementById('loginScreen').classList.add('hidden');
+        updatePersonaSwitcherVisibility();
+        updateAdminTabVisibility();
         switchPersona(savedUser, false);
       } else {
         state.isLoggedIn = false;
+        state.authenticatedUser = null;
+        updatePersonaSwitcherVisibility();
+        updateAdminTabVisibility();
         document.getElementById('loginScreen').classList.remove('hidden');
+      }
+    }
+
+    function updatePersonaSwitcherVisibility() {
+      const switcherWrapper = document.getElementById('personaSwitcherWrapper');
+      if (!switcherWrapper) return;
+      // การสลับบัญชีสามารถทำได้เฉพาะเมื่อบัญชีที่เข้าสู่ระบบจริงคือ 'admin' เท่านั้น
+      if (state.authenticatedUser === 'admin') {
+        switcherWrapper.classList.remove('hidden');
+      } else {
+        switcherWrapper.classList.add('hidden');
+      }
+    }
+
+    function updateAdminTabVisibility() {
+      const adminNavTab = document.getElementById('navTab-admin');
+      if (!adminNavTab) return;
+      // ซ่อนหรือแสดงแท็บระบบบริหารจัดการภาควิชา (Admin Full CRUD) เฉพาะผู้ดูแลระบบ (admin) เท่านั้น
+      if (state.authenticatedUser === 'admin') {
+        adminNavTab.classList.remove('hidden');
+      } else {
+        adminNavTab.classList.add('hidden');
       }
     }
 
@@ -2168,6 +2386,61 @@
       document.getElementById('loginUsernameInput').value = user.username || user.email;
       document.getElementById('loginPasswordInput').value = user.password || '';
       document.getElementById('loginErrorBox').classList.add('hidden');
+    }
+
+    function openAccountDirectoryModal() {
+      const tbody = document.getElementById('directoryTableBody');
+      if (!tbody) return;
+
+      tbody.innerHTML = Object.keys(state.personas).map(key => {
+        const u = state.personas[key];
+        let roleBadge = 'bg-slate-100 text-slate-700';
+        if (key.startsWith('student')) roleBadge = 'bg-amber-100 text-amber-800';
+        else if (key.startsWith('advisor')) roleBadge = 'bg-blue-100 text-blue-800';
+        else if (key === 'coordinator') roleBadge = 'bg-emerald-100 text-emerald-800';
+        else roleBadge = 'bg-purple-100 text-purple-800';
+
+        return `
+          <tr class="hover:bg-slate-50 transition text-xs">
+            <td class="p-3">
+              <div class="font-bold text-slate-900">${escapeHtml(u.name)}</div>
+              <div class="text-[11px] text-slate-400 font-mono">${escapeHtml(u.email || '-')}</div>
+            </td>
+            <td class="p-3">
+              <span class="px-2 py-0.5 rounded-full font-bold text-[10px] ${roleBadge}">${escapeHtml(u.roleTitle)}</span>
+            </td>
+            <td class="p-3 font-mono font-bold text-slate-800">
+              ${escapeHtml(u.username)}
+            </td>
+            <td class="p-3">
+              <code class="px-2 py-1 bg-slate-100 rounded text-slate-800 font-mono font-bold text-[11px] border border-slate-200 select-all">${escapeHtml(u.password)}</code>
+            </td>
+            <td class="p-3 text-center">
+              <button 
+                type="button" 
+                onclick="useAccountFromDirectory('${key}')" 
+                class="px-3 py-1 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-lg text-xs transition shadow-sm"
+              >
+                เข้าใช้งาน
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      document.getElementById('accountDirectoryModal').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeAccountDirectoryModal() {
+      const modal = document.getElementById('accountDirectoryModal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function useAccountFromDirectory(key) {
+      quickFillLogin(key);
+      closeAccountDirectoryModal();
+      showToast(`กรอกชื่อผู้ใช้และรหัสผ่านของ "${state.personas[key].name}" เรียบร้อยแล้ว`, 'info');
     }
 
     function handleLoginSubmit(e) {
@@ -2203,24 +2476,38 @@
       // Successful Login
       errorBox.classList.add('hidden');
       state.isLoggedIn = true;
+      state.authenticatedUser = matchedKey;
       state.currentPersona = matchedKey;
       sessionStorage.setItem('MSU_EDTECH_AUTH_USER', matchedKey);
+
+      // Update persona switcher and admin tab visibility based on whether the logged in user is admin
+      updatePersonaSwitcherVisibility();
+      updateAdminTabVisibility();
+
+      const loggedUser = state.personas[matchedKey];
+      if (loggedUser.studentId) {
+        state.currentStudentId = loggedUser.studentId;
+      }
 
       // Hide login overlay
       document.getElementById('loginScreen').classList.add('hidden');
 
       // Direct to primary view based on role
-      if (matchedKey === 'student') navigateRole('student');
-      else if (matchedKey === 'advisor') navigateRole('advisor');
-      else navigateRole('admin');
+      if (matchedKey.startsWith('student')) navigateRole('student');
+      else if (matchedKey.startsWith('advisor')) navigateRole('advisor');
+      else if (matchedKey === 'admin') navigateRole('admin');
+      else navigateRole('student');
 
       switchPersona(matchedKey, false);
-      showToast(`เข้าสู่ระบบสำเร็จ! ยินดีต้อนรับ ${state.personas[matchedKey].name}`, 'success');
+      showToast(`เข้าสู่ระบบสำเร็จ! ยินดีต้อนรับ ${loggedUser.name}`, 'success');
     }
 
     function handleLogout() {
       state.isLoggedIn = false;
+      state.authenticatedUser = null;
       sessionStorage.removeItem('MSU_EDTECH_AUTH_USER');
+      updatePersonaSwitcherVisibility();
+      updateAdminTabVisibility();
       document.getElementById('loginUsernameInput').value = '';
       document.getElementById('loginPasswordInput').value = '';
       document.getElementById('loginErrorBox').classList.add('hidden');
@@ -2230,33 +2517,53 @@
     }
 
     function switchPersona(personaKey, notify = true) {
+      // ตรวจสอบสิทธิ์: เฉพาะ Admin ที่ล็อกอินเข้ามาเท่านั้นที่ได้รับอนุญาตให้สลับบทบาท
+      if (state.authenticatedUser !== 'admin' && state.authenticatedUser !== personaKey) {
+        showToast('สิทธิ์ถูกจำกัด: เฉพาะผู้ดูแลระบบ (Admin) เท่านั้นที่สามารถสลับบัญชีได้', 'error');
+        return;
+      }
+
       state.currentPersona = personaKey;
-      document.getElementById('personaDropdownMenu').classList.add('hidden');
+      const menu = document.getElementById('personaDropdownMenu');
+      if (menu) menu.classList.add('hidden');
+
+      const persona = state.personas[personaKey];
+      if (!persona) return;
+
+      if (persona.studentId) {
+        state.currentStudentId = persona.studentId;
+      }
 
       ['student', 'advisor', 'coordinator', 'admin'].forEach(k => {
         const icon = document.getElementById(`checkPersona-${k}`);
         if (icon) icon.classList.toggle('hidden', k !== personaKey);
       });
 
-      const persona = state.personas[personaKey];
       document.getElementById('activePersonaLabel').textContent = persona.name;
       document.getElementById('navUserName').textContent = persona.name;
       document.getElementById('navUserSub').textContent = `${persona.roleTitle} • ${persona.subText}`;
       document.getElementById('navUserBadge').textContent = persona.avatarText;
 
       const dot = document.getElementById('roleIndicatorDot');
-      if (personaKey === 'student') dot.className = 'w-2.5 h-2.5 rounded-full bg-amber-400 ring-4 ring-amber-500/20';
-      else if (personaKey === 'advisor') dot.className = 'w-2.5 h-2.5 rounded-full bg-blue-400 ring-4 ring-blue-500/20';
+      if (personaKey.startsWith('student')) dot.className = 'w-2.5 h-2.5 rounded-full bg-amber-400 ring-4 ring-amber-500/20';
+      else if (personaKey.startsWith('advisor')) dot.className = 'w-2.5 h-2.5 rounded-full bg-blue-400 ring-4 ring-blue-500/20';
       else if (personaKey === 'coordinator') dot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-400 ring-4 ring-emerald-500/20';
       else dot.className = 'w-2.5 h-2.5 rounded-full bg-purple-400 ring-4 ring-purple-500/20';
 
       if (notify) {
         showToast(`สลับบทบาทผู้ใช้งาน: ${persona.name} (${persona.roleTitle})`, 'info');
       }
+      renderStudentView();
+      renderAdvisorView();
       enforcePersonaPermissions();
     }
 
     function togglePersonaDropdown() {
+      // ป้องกันการกดเปิดเมนูหากไม่ใช่ผู้ดูแลระบบ
+      if (state.authenticatedUser !== 'admin') {
+        showToast('สิทธิ์ถูกจำกัด: เฉพาะผู้ดูแลระบบ (Admin) เท่านั้นที่สามารถสลับบัญชีได้', 'error');
+        return;
+      }
       document.getElementById('personaDropdownMenu').classList.toggle('hidden');
     }
 
@@ -2268,32 +2575,13 @@
       }
     });
 
-    function switchPersona(personaKey) {
-      state.currentPersona = personaKey;
-      document.getElementById('personaDropdownMenu').classList.add('hidden');
-
-      ['student', 'advisor', 'coordinator', 'admin'].forEach(k => {
-        const icon = document.getElementById(`checkPersona-${k}`);
-        if (icon) icon.classList.toggle('hidden', k !== personaKey);
-      });
-
-      const persona = state.personas[personaKey];
-      document.getElementById('activePersonaLabel').textContent = persona.name;
-      document.getElementById('navUserName').textContent = persona.name;
-      document.getElementById('navUserSub').textContent = `${persona.roleTitle} • ${persona.subText}`;
-      document.getElementById('navUserBadge').textContent = persona.avatarText;
-
-      const dot = document.getElementById('roleIndicatorDot');
-      if (personaKey === 'student') dot.className = 'w-2.5 h-2.5 rounded-full bg-amber-400 ring-4 ring-amber-500/20';
-      else if (personaKey === 'advisor') dot.className = 'w-2.5 h-2.5 rounded-full bg-blue-400 ring-4 ring-blue-500/20';
-      else if (personaKey === 'coordinator') dot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-400 ring-4 ring-emerald-500/20';
-      else dot.className = 'w-2.5 h-2.5 rounded-full bg-purple-400 ring-4 ring-purple-500/20';
-
-      showToast(`สลับบทบาทผู้ใช้งาน: ${persona.name} (${persona.roleTitle})`, 'info');
-      enforcePersonaPermissions();
-    }
-
     function navigateRole(role) {
+      // ป้องกันไม่ให้ผู้ใช้ที่ไม่ใช่ Admin เข้าถึงแท็บ Admin Full CRUD
+      if (role === 'admin' && state.authenticatedUser !== 'admin') {
+        showToast('สิทธิ์ถูกจำกัด: เฉพาะผู้ดูแลระบบ (Admin) เท่านั้นที่สามารถเข้าถึงระบบบริหารจัดการภาควิชาได้', 'error');
+        return;
+      }
+
       state.activeRole = role;
 
       ['student', 'advisor', 'admin'].forEach(r => {
@@ -2337,15 +2625,22 @@
           hasViewPermission = true;
         }
       } else if (state.activeRole === 'admin') {
-        if (p.adminStudents.v || p.adminAdvisors.v || p.adminDefenses.v || p.adminRbac.v) {
+        // โมดูล Admin Full CRUD อนุญาตเฉพาะเมื่อผู้ใช้ที่เข้าสู่ระบบจริงคือ 'admin' เท่านั้น
+        if (state.authenticatedUser === 'admin' && (p.adminStudents.v || p.adminAdvisors.v || p.adminDefenses.v || p.adminRbac.v)) {
           adminView.classList.remove('hidden');
           hasViewPermission = true;
+        } else {
+          hasViewPermission = false;
         }
       }
 
       if (!hasViewPermission) {
         deniedBanner.classList.remove('hidden');
-        document.getElementById('accessDeniedMessage').textContent = `ผู้ใช้ "${persona.name}" ในบทบาท "${persona.roleTitle}" ไม่มีสิทธิ์ View (V) ในโมดูลนี้ตามนโยบาย Granular RBAC`;
+        if (state.activeRole === 'admin') {
+          document.getElementById('accessDeniedMessage').textContent = `สิทธิ์การเข้าถึงถูกจำกัด: โมดูล "ระบบบริหารจัดการภาควิชา (Admin Full CRUD)" สงวนสิทธิ์เฉพาะผู้ดูแลระบบสูงสุด (Super Admin) เท่านั้น`;
+        } else {
+          document.getElementById('accessDeniedMessage').textContent = `ผู้ใช้ "${persona.name}" ในบทบาท "${persona.roleTitle}" ไม่มีสิทธิ์ View (V) ในโมดูลนี้ตามนโยบาย Granular RBAC`;
+        }
       }
 
       applyButtonLockState('btnStudentSubmitDrive', p.studentModule.e);
@@ -2809,14 +3104,20 @@
     }
 
     function renderAdvisorView() {
-      const currentAdvisor = state.advisors[0];
+      const persona = state.personas[state.currentPersona];
+      const activeAdvisorName = (persona && persona.advisorName) ? persona.advisorName : state.advisors[0].name;
+
+      const currentAdvisor = state.advisors.find(a => a.name === activeAdvisorName) || state.advisors[0];
       if (currentAdvisor) {
         document.getElementById('advisorHeaderName').textContent = currentAdvisor.name;
         const myStudentsCount = state.students.filter(s => s.advisorMain === currentAdvisor.name).length;
         document.getElementById('advisorHeaderQuota').textContent = `${myStudentsCount} / ${currentAdvisor.mainQuota} คน`;
       }
 
-      const stu = state.students.find(s => s.id === state.currentStudentId) || state.students[0];
+      // Prioritize student advised by this advisor
+      const advisees = state.students.filter(s => s.advisorMain === currentAdvisor.name || s.advisorCo === currentAdvisor.name);
+      const stu = advisees.length ? advisees[0] : (state.students.find(s => s.id === state.currentStudentId) || state.students[0]);
+
       if (stu) {
         document.getElementById('advisorStudentNameDisplay').textContent = `นิสิต: ${stu.name} (รหัส: ${stu.code})`;
         document.getElementById('advisorStudentTopicDisplay').textContent = `เรื่อง: "${stu.topicTh}"`;
@@ -3663,9 +3964,12 @@
           <tr class="hover:bg-slate-50 transition text-xs">
             <td class="py-3.5 px-4">
               <div class="font-bold text-slate-900">${escapeHtml(u.name)}</div>
-              <div class="text-[11px] text-slate-400">${escapeHtml(u.email || '-')}</div>
+              <div class="text-[11px] text-slate-400">${escapeHtml(u.email || '-')} (Username: <strong class="font-mono text-slate-700">${escapeHtml(u.username)}</strong>)</div>
             </td>
             <td class="py-3.5 px-4 font-semibold text-purple-700">${escapeHtml(u.roleTitle)}</td>
+            <td class="py-3.5 px-4">
+              <code class="px-2 py-1 bg-slate-100 rounded text-slate-800 font-mono font-bold text-[11px] border border-slate-200 select-all">${escapeHtml(u.password)}</code>
+            </td>
             <td class="py-3.5 px-4">${badge(p.studentModule)}</td>
             <td class="py-3.5 px-4">${badge(p.advisorModule)}</td>
             <td class="py-3.5 px-4">${badge(p.adminStudents)}</td>
