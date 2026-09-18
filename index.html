@@ -1206,7 +1206,7 @@
         <input 
           type="url" 
           id="gasApiUrlInput" 
-          placeholder="https://script.google.com/macros/s/AKfycbzylE5RYDcbO9OZb5l9JRbvULcpXmZeTWBVaVaFQI9R0x0-3VPbyXRFTT_JkN5vAiXfQQ/exec"
+          placeholder="https://script.google.com/macros/s/.../exec"
           class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs sm:text-sm text-slate-800 font-mono focus:ring-2 focus:ring-amber-500 focus:bg-white"
         />
       </div>
@@ -1401,10 +1401,12 @@
   <div id="advisorCrudModal" class="fixed inset-0 z-50 hidden bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-slate-200">
       <div class="flex items-center justify-between pb-3 border-b border-slate-100">
-        <h3 class="font-bold text-base sm:text-lg text-slate-900 flex items-center gap-2" id="advisorModalTitle">
-          <i data-lucide="user-plus" class="w-5 h-5 text-purple-600"></i>
-          <span>เพิ่มอาจารย์ที่ปรึกษาใหม่</span>
-        </h3>
+        <div>
+          <span class="text-[10px] font-bold uppercase tracking-wider text-purple-600 bg-purple-50 px-2 py-0.5 rounded border border-purple-200">Advisors & Users Synchronized</span>
+          <h3 class="font-bold text-base sm:text-lg text-slate-900 mt-1" id="advisorModalTitle">
+            เพิ่มอาจารย์ที่ปรึกษาใหม่
+          </h3>
+        </div>
         <button onclick="closeAdvisorModal()" class="w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-400">
           <i data-lucide="x" class="w-5 h-5"></i>
         </button>
@@ -1424,9 +1426,20 @@
           <input type="text" id="advInputSpec" required placeholder="เช่น AI in Education, Augmented Reality" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 focus:ring-2 focus:ring-purple-500 focus:bg-white">
         </div>
 
-        <div>
-          <label class="block font-bold text-slate-700 mb-1">อีเมลติดต่อ *</label>
-          <input type="email" id="advInputEmail" required placeholder="advisor@msu.ac.th" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 focus:ring-2 focus:ring-purple-500 focus:bg-white">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">อีเมลติดต่อ (Username เข้าสู่ระบบ) *</label>
+            <input type="email" id="advInputEmail" required placeholder="advisor@msu.ac.th" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 focus:ring-2 focus:ring-purple-500 focus:bg-white font-mono text-xs">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">รหัสผ่านเข้าสู่ระบบ (Password) *</label>
+            <input type="text" id="advInputPassword" required placeholder="เช่น tech@2026" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 focus:ring-2 focus:ring-purple-500 focus:bg-white font-mono text-xs">
+          </div>
+        </div>
+
+        <div class="p-2.5 bg-blue-50/80 border border-blue-200 rounded-xl text-[11px] text-blue-800 flex items-start gap-2">
+          <i data-lucide="info" class="w-4 h-4 text-blue-600 shrink-0 mt-0.5"></i>
+          <span>ระบบจะเชื่อมโยงและปรับปรุงข้อมูลในแท็บ <strong>Advisors</strong> และ <strong>Users (สิทธิ์ RBAC)</strong> ใน Google Sheet อัตโนมัติ</span>
         </div>
 
         <div>
@@ -1456,7 +1469,7 @@
 
         <div class="pt-3 flex justify-end gap-2 border-t border-slate-100">
           <button type="button" onclick="closeAdvisorModal()" class="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl">ยกเลิก</button>
-          <button type="submit" class="px-5 py-2 text-xs font-bold bg-purple-600 hover:bg-purple-700 text-white rounded-xl shadow">บันทึกข้อมูลอาจารย์</button>
+          <button type="submit" class="px-5 py-2 text-xs font-bold bg-purple-600 hover:bg-purple-700 text-white rounded-xl shadow">บันทึกข้อมูลอาจารย์ & บัญชีผู้ใช้</button>
         </div>
       </form>
     </div>
@@ -3585,10 +3598,19 @@
           document.getElementById('advInputEmail').value = a.email;
           document.getElementById('advInputMainQuota').value = a.mainQuota;
           document.getElementById('advInputStatus').value = a.status;
+
+          // Find linked user in personas to pre-populate password
+          let linkedUser = Object.values(state.personas).find(u => 
+            (u.email && a.email && u.email.toLowerCase() === a.email.toLowerCase()) || 
+            u.name === a.name
+          );
+          document.getElementById('advInputPassword').value = linkedUser ? linkedUser.password : 'tech@2026';
+
           populateDriveLinksContainer('advDriveLinksContainer', a.driveLinks);
         }
       } else {
         document.getElementById('advisorCrudForm').reset();
+        document.getElementById('advInputPassword').value = 'tech@2026';
         populateDriveLinksContainer('advDriveLinksContainer', []);
       }
 
@@ -3604,18 +3626,24 @@
       e.preventDefault();
       const mode = document.getElementById('advisorFormMode').value;
       const id = document.getElementById('advisorFormId').value;
+      const name = document.getElementById('advInputName').value.trim();
+      const email = document.getElementById('advInputEmail').value.trim();
+      const password = document.getElementById('advInputPassword').value.trim();
       const driveLinks = getDriveLinksFromContainer('advDriveLinksContainer');
 
+      const advId = mode === 'edit' && id ? id : `ADV-${Date.now()}`;
       const advData = {
-        id: mode === 'edit' && id ? id : `ADV-${Date.now()}`,
-        name: document.getElementById('advInputName').value.trim(),
+        id: advId,
+        name: name,
         specialization: document.getElementById('advInputSpec').value.trim(),
-        email: document.getElementById('advInputEmail').value.trim(),
+        email: email,
         mainQuota: Number(document.getElementById('advInputMainQuota').value) || 5,
         status: document.getElementById('advInputStatus').value,
-        driveLinks: driveLinks
+        driveLinks: driveLinks,
+        password: password
       };
 
+      // 1. Update Advisors State
       if (mode === 'edit') {
         const idx = state.advisors.findIndex(x => x.id === id);
         if (idx >= 0) state.advisors[idx] = advData;
@@ -3623,24 +3651,71 @@
         state.advisors.push(advData);
       }
 
+      // 2. Synchronize with Personas / Users State (Module 5)
+      let personaKey = Object.keys(state.personas).find(k => {
+        const u = state.personas[k];
+        return (u.email && u.email.toLowerCase() === email.toLowerCase()) || u.name === name;
+      });
+
+      if (!personaKey) {
+        personaKey = `advisor_${email.split('@')[0] || Date.now()}`;
+      }
+
+      const nameClean = name.replace(/^(นาย|นาง|นางสาว|ดร\.|ผศ\.|รศ\.|ศ\.)\s*/g, '').trim();
+      const avatarText = nameClean.length >= 2 ? nameClean.slice(0, 2) : 'AD';
+
+      state.personas[personaKey] = {
+        key: personaKey,
+        username: email,
+        email: email,
+        password: password,
+        advisorName: name,
+        name: name,
+        roleTitle: 'อาจารย์ที่ปรึกษา',
+        subText: 'ภาควิชาเทคโนโลยีและสื่อสารการศึกษา',
+        avatarText: avatarText,
+        permissions: (state.personas[personaKey] && state.personas[personaKey].permissions) ? state.personas[personaKey].permissions : {
+          studentModule: { v: true, e: false, d: false, a: false },
+          advisorModule: { v: true, e: true, d: false, a: true },
+          gradOfficerModule: { v: true, e: false, d: false, a: false },
+          adminStudents: { v: true, e: false, d: false, a: false },
+          adminAdvisors: { v: true, e: false, d: false, a: false },
+          adminDefenses: { v: true, e: false, d: false, a: false },
+          adminRbac: { v: false, e: false, d: false, a: false }
+        }
+      };
+
+      // 3. Send API Call to Google Sheet backend
       if (state.apiUrl) {
-        await apiCall('saveAdvisor', advData);
+        await apiCall('saveAdvisor', { ...advData, userKey: personaKey });
       }
 
       closeAdvisorModal();
-      showToast('บันทึกข้อมูลอาจารย์สำเร็จ', 'success');
+      showToast('บันทึกข้อมูลอาจารย์และอัปเดตบัญชีผู้ใช้ (Users) เรียบร้อยแล้ว', 'success');
       refreshAllViews();
     }
 
     function promptDeleteAdvisor(id) {
       const a = state.advisors.find(x => x.id === id);
       if (!a) return;
-      openDeleteConfirm(`คุณต้องการลบข้อมูลอาจารย์ "${a.name}" ใช่หรือไม่?`, async () => {
+      openDeleteConfirm(`คุณต้องการลบข้อมูลอาจารย์ "${a.name}" และบัญชีผู้ใช้ที่เกี่ยวข้องใช่หรือไม่?`, async () => {
+        // 1. Remove from advisors state
         state.advisors = state.advisors.filter(x => x.id !== id);
-        if (state.apiUrl) {
-          await apiCall('deleteAdvisor', { id });
+
+        // 2. Remove from personas state
+        const personaKey = Object.keys(state.personas).find(k => {
+          const u = state.personas[k];
+          return (u.email && a.email && u.email.toLowerCase() === a.email.toLowerCase()) || u.name === a.name;
+        });
+        if (personaKey) {
+          delete state.personas[personaKey];
         }
-        showToast('ลบข้อมูลอาจารย์เรียบร้อยแล้ว', 'success');
+
+        // 3. Delete in Google Sheet backend
+        if (state.apiUrl) {
+          await apiCall('deleteAdvisor', { id, email: a.email });
+        }
+        showToast('ลบข้อมูลอาจารย์และบัญชีผู้ใช้ออกจากระบบเรียบร้อยแล้ว', 'success');
         refreshAllViews();
       });
     }
@@ -4117,9 +4192,31 @@
       };
 
       state.personas[key] = newUser;
+
+      // Two-way synchronization: If added user is an advisor, synchronize into state.advisors
+      if (role === 'advisor') {
+        const existingAdv = state.advisors.find(a => a.name === name || (a.email && a.email === newUser.email));
+        if (!existingAdv) {
+          state.advisors.push({
+            id: `ADV-${Date.now()}`,
+            name: name,
+            specialization: 'Educational Technology & Communications',
+            email: newUser.email,
+            mainQuota: 5,
+            status: 'เปิดรับ',
+            driveLinks: []
+          });
+        }
+      }
+
       if (state.apiUrl) {
         await apiCall('saveUser', newUser);
       }
+
+      closeUserAccountModal();
+      showToast('เพิ่มบัญชีผู้ใช้ใหม่และซิงก์ข้อมูลเรียบร้อยแล้ว!', 'success');
+      refreshAllViews();
+    }
 
       closeUserAccountModal();
       showToast('เพิ่มบัญชีผู้ใช้ใหม่เรียบร้อยแล้ว!', 'success');
