@@ -1206,7 +1206,7 @@
         <input 
           type="url" 
           id="gasApiUrlInput" 
-          placeholder="https://script.google.com/macros/s/AKfycbyWz59rKQIr3Uz6qTeVEkBLuJ2CSg300HmMnBdt16xRDu7hbmgwWhzrwzhmgPCuHyQlrA/exec"
+          placeholder="https://script.google.com/macros/s/.../exec"
           class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs sm:text-sm text-slate-800 font-mono focus:ring-2 focus:ring-amber-500 focus:bg-white"
         />
       </div>
@@ -1855,7 +1855,7 @@
 
   <script>
     // URL Web App API จาก Google Apps Script (Production Web App Endpoint)
-    const DEFAULT_GAS_API_URL = 'https://script.google.com/macros/s/AKfycbzylE5RYDcbO9OZb5l9JRbvULcpXmZeTWBVaVaFQI9R0x0-3VPbyXRFTT_JkN5vAiXfQQ/exec';
+    const DEFAULT_GAS_API_URL = 'https://script.google.com/macros/s/AKfycbzkEz9h454qh0YN5jUD7nsXRwnZnDGZ9IcN6U9ipg3pILeXlnVNo2hk1cq8wD9pOwqb/exec';
 
     /**
      * ฟังก์ชันช่วยจัดรูปแบบ URL ให้อยู่ในรูป Web App Endpoint (/exec) อัตโนมัติ
@@ -4216,11 +4216,6 @@
       closeUserAccountModal();
       showToast('เพิ่มบัญชีผู้ใช้ใหม่และซิงก์ข้อมูลเรียบร้อยแล้ว!', 'success');
       refreshAllViews();
-    }
-
-      closeUserAccountModal();
-      showToast('เพิ่มบัญชีผู้ใช้ใหม่เรียบร้อยแล้ว!', 'success');
-      renderRbacTable();
     }
 
     let onConfirmDeleteCallback = null;
